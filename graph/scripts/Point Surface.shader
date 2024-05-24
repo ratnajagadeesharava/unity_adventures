@@ -14,7 +14,10 @@ Shader "Graph/Point Surface"
 			float _Smoothness;
 			void ConfigureSurface(Input input,inout SurfaceOutputStandard surface){
 				surface.Smoothness = _Smoothness;
-				surface.Albedo = sin(input.worldPos.xyz)*0.5;
+				float  x = abs(input.worldPos.x);
+				float y= abs(input.worldPos.y);
+				float z  = abs(input.worldPos.z);
+				surface.Albedo = float3(sin(x),cos(x),1.0)*0.5;
 				}
 		ENDCG
 	}
