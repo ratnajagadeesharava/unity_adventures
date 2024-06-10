@@ -1,0 +1,37 @@
+#pragma kernel FunctionKernel
+#define PI 3.14f
+float _Step,_Time;
+
+RWStructuredBuffer<float3> _Positions;
+
+uint _Resolution;
+
+float3 Wave(float u, float v, float t)
+{
+    float3 p;
+    p.x = u;
+    p.y = sin(PI * (u + v + t));
+    p.z = v;
+    return p;
+
+}
+
+void SetPosition(uint3 id,float3 position)
+{
+    //converting 2d array into 1d array
+    if (id.x < _Resolution && id.y < _Resolution)
+    {
+        _Positions[id.x + id.y * _Resolution] = position;
+    }
+}
+float2 GetUV(uint3 threadId)
+{
+    return (threadId.xy + 0.5) * _Step - 1.0;
+    
+}
+[numthreads(8, 8, 1)]
+void FunctionKernel(uint3 threadId:SV_DispatchThreadID)
+{
+    float2 uv = GetUV(threadId);
+    SetPosition(threadId, Wave(uv.x,uv.y,_Time));
+}
