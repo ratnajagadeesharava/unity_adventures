@@ -1,0 +1,32 @@
+#pragma kernel CSMain
+#define PI 3.14159265358979323846
+RWStructuredBuffer<float3> _Positions;
+float _Step;
+float _Time;
+uint _Resolution;
+
+
+
+float2 GetUV(uint3 id)
+{
+    return (id.xy + 0.5) * _Step - 1.0;
+}
+void SetPosition(uint3 threadID, float3 position)
+{
+    _Positions[threadID.x + threadID.y * _Resolution] = position;
+}
+float3 Wave(float u, float v,float t)
+{
+    float3 p;
+    p.x = u;
+    p.y = sin(PI * (u + v + t));
+    p.z = v;
+    return p;
+}
+void CSMain(uint3 threadId:SV_DispatchThreadID)
+{
+    float2 uv = GetUV(threadId);
+    SetPosition(threadId, Wave(uv.x,uv.y,_Time
+    ));
+
+}
